@@ -1,99 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Best of Luck</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 | Jhalak Jethwani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@1,400;1,700&family=Montserrat:wght@200;400&display=swap');
 
-<style>
-body{
-    margin:0;
-    height:100vh;
-    background:#020111;
-    font-family:Segoe UI,sans-serif;
-    color:white;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-}
+        :root {
+            --gold: #d4af37;
+            --rose: #e0a3a3;
+            --bg: #0a0a0a;
+        }
 
-.card{
-    text-align:center;
-    padding:40px;
-    border-radius:20px;
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(10px);
-    z-index:2;
-}
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: var(--bg);
+            font-family: 'Montserrat', sans-serif;
+            perspective: 1000px;
+        }
 
-h1{color:#ffdd00}
-.name{color:#00f5ff}
+        #canvas {
+            position: fixed; top: 0; left: 0; z-index: 1;
+        }
 
-footer{
-    margin-top:20px;
-    font-size:.85rem;
-    color:#bbb;
-    z-index:2;
-}
+        /* High-End Glassmorphism Card */
+        .scene {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10; width: 100%; display: flex;
+            justify-content: center; align-items: center;
+            pointer-events: none;
+        }
 
-canvas{
-    position:fixed;
-    inset:0;
-    z-index:1;
-}
-</style>
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            max-width: 500px;
+            width: 85%;
+            pointer-events: auto;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Decorative Corners */
+        .card::before, .card::after {
+            content: ''; position: absolute; width: 40px; height: 40px;
+            border: 2px solid var(--gold);
+        }
+        .card::before { top: -10px; left: -10px; border-right: 0; border-bottom: 0; }
+        .card::after { bottom: -10px; right: -10px; border-left: 0; border-top: 0; }
+
+        .name-tag {
+            color: var(--gold);
+            letter-spacing: 10px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: block;
+            opacity: 0;
+            animation: slideDown 2s forwards 0.5s;
+        }
+
+        .main-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 3.5rem;
+            color: #fff;
+            font-style: italic;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 2s forwards 1.2s;
+        }
+
+        .wish-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.8;
+            opacity: 0;
+            animation: fadeIn 2s forwards 2s;
+        }
+
+        .highlight {
+            display: block;
+            margin-top: 15px;
+            color: var(--rose);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .signature {
+            margin-top: 60px;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.4);
+            opacity: 0;
+            animation: fadeIn 2s forwards 3s;
+        }
+
+        .signature b { color: var(--gold); font-weight: 400; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Subtle floating hint */
+        .hint {
+            position: fixed; bottom: 30px; width: 100%; text-align: center;
+            color: rgba(212, 175, 55, 0.4); font-size: 0.6rem; letter-spacing: 5px;
+        }
+    </style>
 </head>
-
 <body>
 
-<canvas id="c"></canvas>
+    <canvas id="canvas"></canvas>
 
-<div class="card">
-    <h1>Best of Luck</h1>
-    <h2 class="name" id="n"></h2>
-    <p>
-        May things work out in your favor.<br>
-        Stay confident and keep going ✨
-    </p>
-</div>
+    <div class="scene">
+        <div class="card" id="tiltCard">
+            <span class="name-tag">Jhalak Jethwani</span>
+            <h1 class="main-title">Happy 2026</h1>
+            <p class="wish-text">
+                I hope you get whatever you deserve
+                <span class="highlight">(especially a supercar and a boyfriend🤭)</span>
+            </p>
+            <div class="signature">
+                Made with love by <b>Tanmay</b> <span style="color:#af1a1a">❤️</span>
+            </div>
+        </div>
+    </div>
 
-<footer>
-    Made with love by Tanmay at 3 AM ❤️
-</footer>
+    <div class="hint">TILT YOUR SCREEN</div>
 
-<script>
-const name = "@@@@@@@@@@@@";
-document.getElementById("n").innerText = name;
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const card = document.getElementById('tiltCard');
+        let particles = [];
 
-const c = document.getElementById("c"),
-      x = c.getContext("2d");
-c.width = innerWidth;
-c.height = innerHeight;
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
 
-let p=[];
-function boom(){
-    let X=Math.random()*c.width,
-        Y=Math.random()*c.height/2,
-        clr=["#ff004c","#ffdd00","#00f5ff","#00ff88"];
-    for(let i=0;i<60;i++)
-        p.push({x:X,y:Y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,c:clr[i%4],l:80});
-}
+        // Parallax Mouse Effect
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 25;
+            const y = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        });
 
-(function anim(){
-    x.fillStyle="rgba(0,0,0,.2)";
-    x.fillRect(0,0,c.width,c.height);
-    p.forEach((a,i)=>{
-        a.x+=a.vx; a.y+=a.vy; a.l--;
-        x.fillStyle=a.c;
-        x.fillRect(a.x,a.y,2,2);
-        if(a.l<0) p.splice(i,1);
-    });
-    requestAnimationFrame(anim);
-})();
+        class Petal {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.w = Math.random() * 15 + 5;
+                this.h = Math.random() * 10 + 5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.flip = Math.random();
+                this.flipSpeed = Math.random() * 0.03;
+                this.speedY = Math.random() * 1 + 0.5;
+                this.speedX = Math.random() * 1 - 0.5;
+            }
 
-setInterval(boom,900);
-</script>
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.flip * Math.PI);
+                ctx.scale(this.flip, 1);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(this.w/2, -this.h/2, this.w, this.h/2, 0, this.h);
+                ctx.bezierCurveTo(-this.w, this.h/2, -this.w/2, -this.h/2, 0, 0);
+                ctx.fillStyle = `rgba(224, 163, 163, ${this.opacity})`;
+                ctx.fill();
+                ctx.restore();
+            }
 
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.flip += this.flipSpeed;
+                if (this.y > canvas.height) this.y = -20;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+            }
+        }
+
+        // Initialize drifting petals
+        for(let i = 0; i < 50; i++) {
+            particles.push(new Petal());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
