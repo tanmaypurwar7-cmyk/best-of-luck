@@ -3,214 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 | Jhalak Jethwani</title>
+    <title>Modern Calculator</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@1,400;1,700&family=Montserrat:wght@200;400&display=swap');
-
-        :root {
-            --gold: #d4af37;
-            --rose: #e0a3a3;
-            --bg: #0a0a0a;
+        /* CSS: Styling the calculator */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+            margin: 0;
         }
 
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background: var(--bg);
-            font-family: 'Montserrat', sans-serif;
-            perspective: 1000px;
+        .calculator {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+            width: 320px;
         }
 
-        #canvas {
-            position: fixed; top: 0; left: 0; z-index: 1;
-        }
-
-        /* High-End Glassmorphism Card */
-        .scene {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10; width: 100%; display: flex;
-            justify-content: center; align-items: center;
-            pointer-events: none;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 80px 40px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            max-width: 500px;
-            width: 85%;
-            pointer-events: auto;
-            transition: transform 0.1s ease-out;
-        }
-
-        /* Decorative Corners */
-        .card::before, .card::after {
-            content: ''; position: absolute; width: 40px; height: 40px;
-            border: 2px solid var(--gold);
-        }
-        .card::before { top: -10px; left: -10px; border-right: 0; border-bottom: 0; }
-        .card::after { bottom: -10px; right: -10px; border-left: 0; border-top: 0; }
-
-        .name-tag {
-            color: var(--gold);
-            letter-spacing: 10px;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            display: block;
-            opacity: 0;
-            animation: slideDown 2s forwards 0.5s;
-        }
-
-        .main-title {
-            font-family: 'Bodoni Moda', serif;
-            font-size: 3.5rem;
+        #display {
+            width: 100%;
+            height: 60px;
+            background-color: #444;
             color: #fff;
-            font-style: italic;
+            border: none;
+            border-radius: 10px;
+            font-size: 2rem;
+            text-align: right;
+            padding: 10px;
+            box-sizing: border-box;
             margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeIn 2s forwards 1.2s;
         }
 
-        .wish-text {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.1rem;
-            font-weight: 300;
-            line-height: 1.8;
-            opacity: 0;
-            animation: fadeIn 2s forwards 2s;
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
         }
 
-        .highlight {
-            display: block;
-            margin-top: 15px;
-            color: var(--rose);
-            font-size: 0.9rem;
-            font-style: italic;
+        button {
+            padding: 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #555;
+            color: white;
+            transition: background-color 0.2s;
         }
 
-        .signature {
-            margin-top: 60px;
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.4);
-            opacity: 0;
-            animation: fadeIn 2s forwards 3s;
+        button:hover {
+            background-color: #777;
         }
 
-        .signature b { color: var(--gold); font-weight: 400; }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        button:active {
+            transform: scale(0.98);
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        /* Specific styles for operators and special buttons */
+        .operator {
+            background-color: #ff9f43;
+            color: #333;
+            font-weight: bold;
         }
 
-        /* Subtle floating hint */
-        .hint {
-            position: fixed; bottom: 30px; width: 100%; text-align: center;
-            color: rgba(212, 175, 55, 0.4); font-size: 0.6rem; letter-spacing: 5px;
+        .operator:hover {
+            background-color: #ffb775;
+        }
+
+        .equals {
+            grid-column: span 2;
+            background-color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .equals:hover {
+            background-color: #58d68d;
+        }
+
+        .clear {
+            background-color: #e74c3c;
+        }
+
+        .clear:hover {
+            background-color: #ec7063;
         }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas"></canvas>
+    <div class="calculator">
+        <input type="text" id="display" disabled>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">DEL</button>
+            <button onclick="appendToDisplay('%')">%</button>
+            <button class="operator" onclick="appendToDisplay('/')">/</button>
 
-    <div class="scene">
-        <div class="card" id="tiltCard">
-            <span class="name-tag">Jhalak Jethwani</span>
-            <h1 class="main-title">Happy New Year 2026</h1>
-            <p class="wish-text">
-                I hope you get whatever you deserve
-                <span class="highlight">(especially a supercar and a boyfriend🤭)</span>
-            </p>
-            <div class="signature">
-                Made with love by <b>Tanmay</b> <span style="color:#af1a1a">❤️</span>
-            </div>
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('*')">*</button>
+
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('-')">-</button>
+
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class="equals" onclick="calculateResult()">=</button>
         </div>
     </div>
 
-    <div class="hint">TILT YOUR SCREEN</div>
-
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const card = document.getElementById('tiltCard');
-        let particles = [];
+        // JavaScript: Logic for the calculator
+        const display = document.getElementById('display');
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // Parallax Mouse Effect
-        document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 25;
-            const y = (window.innerHeight / 2 - e.pageY) / 25;
-            card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-        });
-
-        class Petal {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.w = Math.random() * 15 + 5;
-                this.h = Math.random() * 10 + 5;
-                this.opacity = Math.random() * 0.5 + 0.2;
-                this.flip = Math.random();
-                this.flipSpeed = Math.random() * 0.03;
-                this.speedY = Math.random() * 1 + 0.5;
-                this.speedX = Math.random() * 1 - 0.5;
-            }
-
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.flip * Math.PI);
-                ctx.scale(this.flip, 1);
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(this.w/2, -this.h/2, this.w, this.h/2, 0, this.h);
-                ctx.bezierCurveTo(-this.w, this.h/2, -this.w/2, -this.h/2, 0, 0);
-                ctx.fillStyle = `rgba(224, 163, 163, ${this.opacity})`;
-                ctx.fill();
-                ctx.restore();
-            }
-
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                this.flip += this.flipSpeed;
-                if (this.y > canvas.height) this.y = -20;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-            }
+        // Append numbers/operators to the display
+        function appendToDisplay(input) {
+            display.value += input;
         }
 
-        // Initialize drifting petals
-        for(let i = 0; i < 50; i++) {
-            particles.push(new Petal());
+        // Clear the entire display
+        function clearDisplay() {
+            display.value = '';
         }
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
+        // Delete the last character
+        function deleteLast() {
+            display.value = display.value.toString().slice(0, -1);
         }
-        animate();
-    </script>
-</body>
-</html>
+
+        // Calculate the result
+        function calculateResult() {
+            try {
+                // eval() evaluates the math expression in
